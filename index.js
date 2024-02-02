@@ -40,9 +40,14 @@ app.get("/review" , async (req, res) => {
     res.send(result);
 })
 // carts realated
+app.get("/carts", async (req, res) =>{
+  
+    const result = await cartsCollection.find().toArray()
+    res.send(result) 
+  })
 app.post("/carts" , async(req, res ) => {
-   const id = req.body;
-   const result = await cartsCollection.insertOne(id);
+   const cartItem = req.body;
+   const result = await cartsCollection.insertOne(cartItem);
    res.send(result)
 })
     // Send a ping to confirm a successful connection
