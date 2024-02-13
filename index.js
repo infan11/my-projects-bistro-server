@@ -72,12 +72,12 @@ const verifyToken = (req, res, next) => {
 };
 
 // users related api 
-app.get("/users" , verifyToken,verifyAdmin, async(req, res) => {
+app.get("/users" , async(req, res) => {
  
   const result = await usersCollection.find().toArray();
   res.send(result);
 })
-app.post("/users" , verifyToken, verifyAdmin, async (req, res) => {
+app.post("/users" ,async (req, res) => {
   const user  = req.body;
   // insert email if user doesnot exists:
   // you can do this many ways (1.email unique , 2. upsert 3.simple checking)
@@ -87,7 +87,7 @@ app.post("/users" , verifyToken, verifyAdmin, async (req, res) => {
     return res.send({message: "User already Exists" , insertedId : null})
   }
   const result = await usersCollection.insertOne(user);
-  res.send(result); 
+  res.send(result);
 })
 
 app.delete("/users/:id" , async (req, res)  => {
@@ -132,13 +132,13 @@ app.get("/review" , async (req, res) => {
     res.send(result);
 })
 // carts realated
-app.get("/carts", async (req, res) =>{
+app.get("/carts",  async (req, res) =>{
     const email = req.query.email;
     const query = {email : email}
     const result = await cartsCollection.find(query).toArray()
     res.send(result) 
   })
-app.post("/carts" , async(req, res ) => {
+app.post("/carts" ,  async(req, res ) => {
    const cartItem = req.body;
    const result = await cartsCollection.insertOne(cartItem);
    res.send(result)
