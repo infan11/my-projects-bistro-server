@@ -31,6 +31,7 @@ async function run() {
    const menuCollection = client.db("bistroBossDB").collection("menu")
    const reviewCollection = client.db("bistroBossDB").collection("review")
    const cartsCollection = client.db("bistroBossDB").collection("carts")
+   const contactsCollection = client.db("bistroBossDB").collection("contacts")
 
    // jwt token  api 
     // first step
@@ -72,12 +73,12 @@ const verifyToken = (req, res, next) => {
 };
 
 // users related api 
-app.get("/users" , async(req, res) => {
+app.get("/users" , verifyToken,verifyAdmin, async(req, res) => {
  
   const result = await usersCollection.find().toArray();
   res.send(result);
 })
-app.post("/users" ,async (req, res) => {
+app.post("/users" , verifyToken, verifyAdmin, async (req, res) => {
   const user  = req.body;
   // insert email if user doesnot exists:
   // you can do this many ways (1.email unique , 2. upsert 3.simple checking)
@@ -86,8 +87,9 @@ app.post("/users" ,async (req, res) => {
   if(existingUser){
     return res.send({message: "User already Exists" , insertedId : null})
   }
+  
   const result = await usersCollection.insertOne(user);
-  res.send(result);
+  res.send(result); 
 })
 
 app.delete("/users/:id" , async (req, res)  => {
@@ -151,7 +153,21 @@ app.delete("/carts/:id" , async (req, res) => {
   const result = await cartsCollection.deleteOne(query);
   res.send(result)
 })
-
+// contacts related api 
+app.get("/contacts",  async (req, res) =>{
+  const result = await contactsCollection.find({}).toArray();
+  res.send(result) 
+})
+// app.post("/contacts" , async (req ,res) => {
+//   const contactItem = req.body;
+//   const result = await contactsCollection.insertOne(contactItem);
+//   res.send(result);
+// })
+app.post("/contacts" , async (req , res) => {
+  const dataCon = req.body;
+  const result = await contactsCollection.insertOne(dataCon);
+  res.send(result);
+})
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
