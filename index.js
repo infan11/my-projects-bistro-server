@@ -74,11 +74,11 @@ const verifyToken = (req, res, next) => {
 
 // users related api 
 app.get("/users" , verifyToken,verifyAdmin, async(req, res) => {
- 
   const result = await usersCollection.find().toArray();
+  console.log(result);
   res.send(result);
 })
-app.post("/users" , verifyToken, verifyAdmin, async (req, res) => {
+app.post("/users" ,verifyToken, async (req, res) => {
   const user  = req.body;
   // insert email if user doesnot exists:
   // you can do this many ways (1.email unique , 2. upsert 3.simple checking)
@@ -110,7 +110,7 @@ app.patch("/users/admin/:id" ,verifyToken,verifyAdmin, async ( req , res ) => {
   res.send(result)
 })
 
-app.get("/users/admin/:email" ,verifyToken,verifyAdmin ,async (req, res) => {
+app.get("/users/admin/:email" ,verifyToken ,async (req, res) => {
   const email = req.params.email;
   if(email !== req.decoded.email){
     return res.status(403).send({message : "unauthorized access"})
